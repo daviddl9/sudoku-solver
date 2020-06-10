@@ -146,9 +146,9 @@ class Sudoku(object):
                 if val in self.grid[i][j].domain:
                     vals[val] += 1
         x = sorted(vals.items(), key=lambda i: i[1])
-        res = set()
+        res = []
         for i in x:
-            res.add(i[0])
+            res.append(i[0])
         return res
 
     def backtrack(self):
