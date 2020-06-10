@@ -138,12 +138,24 @@ class Sudoku(object):
                             chosen_col = col
         return self.grid[chosen_row][chosen_col]
 
+    def least_constraining_values(self, cell):
+        vals = {}
+        for val in cell.domain:
+            vals[val] = 0
+            for i, j in cell.neighbors:
+                if val in self.grid[i][j].domain:
+                    vals[val] += 1
+        x = sorted(vals.items(), key=lambda i: i[1])
+        res = set()
+        for i in x:
+            res.add(i[0])
+        return res
+
     def backtrack(self):
         if self.isSolved():
             return True
         cell = self.choose_cell_to_assign()
-        domain_copy = copy.deepcopy(cell.domain)
-        for val in domain_copy:
+        for val in self.least_constraining_values(cell):
             changes = []
             self.puzzle[cell.coords[0]][cell.coords[1]] = val
             for y, x in cell.neighbors:
