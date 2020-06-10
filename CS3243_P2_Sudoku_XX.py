@@ -1,13 +1,7 @@
-# CS3243 Introduction to Artificial Intelligence
-# Project 2, Part 1: Sudoku
-
 import sys
 import copy
 import heapq
 from collections import defaultdict
-
-# Running script: given code can be run with the command:
-# python file.py, ./path/to/init_state.txt ./output/output.txt
 
 class Cell(object):
     def __init__(self, coords, board):
@@ -61,7 +55,6 @@ class Cell(object):
 
 class Sudoku(object):
     def __init__(self, puzzle):
-        # you may add more attributes if you need
         self.puzzle = puzzle # self.puzzle is a list of lists
         self.grid = self.initGrid()
 
@@ -72,7 +65,6 @@ class Sudoku(object):
                 grid[y][x] = Cell((y, x), self.puzzle)
         return grid
 
-    
     def isSolved(self):
         for i in range(9):
             for j in range(9):
@@ -90,7 +82,6 @@ class Sudoku(object):
                 changes.append((cell.coords, val))
                 revised = True
         return revised
-        
 
     def infer(self, changes):
         q = []
@@ -176,7 +167,6 @@ class Sudoku(object):
 
 
 if __name__ == "__main__":
-    # STRICTLY do NOT modify the code in the main function here
     if len(sys.argv) != 3:
         print ("\nUsage: python CS3243_P2_Sudoku_XX.py input.txt output.txt\n")
         raise ValueError("Wrong number of arguments!")
