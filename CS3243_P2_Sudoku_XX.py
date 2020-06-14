@@ -2,6 +2,7 @@ import sys
 import copy
 import heapq
 from collections import defaultdict
+import time
 
 class Cell(object):
     def __init__(self, coords, board):
@@ -83,14 +84,12 @@ class Sudoku(object):
                 revised = True
         return revised
 
-    def infer(self, changes):
+    def infer(self, changes, cell):
         q = []
-        for y in range(9):
-            for x in range(9):
-                if self.puzzle[y][x] == 0:
-                    for i, j in self.grid[y][x].neighbors:
-                        if len(self.grid[i][j].domain) == 1:
-                            q.append((self.grid[y][x], self.grid[i][j]))
+        y, x = cell[0], cell[1]
+        for i, j in self.grid[y][x].neighbors:
+            if len(self.grid[i][j].domain) == 1:
+                q.append((self.grid[y][x], self.grid[i][j]))
         while q:
             cell, neigh = q.pop()
             if self.revise(cell, neigh, changes):
@@ -99,7 +98,7 @@ class Sudoku(object):
                 if len(cell.domain) == 1:
                     for i, j in cell.neighbors:
                         if (i, j) != neigh.coords:
-                            q.append((cell, self.grid[i][j]))
+                            q.append((self.grid[i][j], cell))
         return True
 
     def unassign(self, changes, cell, val):
@@ -153,7 +152,7 @@ class Sudoku(object):
                 if val in self.grid[y][x].domain:
                     self.grid[y][x].domain.remove(val)
                     changes.append(((y,x), val))
-            inferenceResult = self.infer(changes)
+            inferenceResult = self.infer(changes, cell.coords)
             if inferenceResult == True:
                 res = self.backtrack()
                 if res == True:
@@ -162,7 +161,9 @@ class Sudoku(object):
         return False
 
     def solve(self):
+        start = time.time()
         self.backtrack()
+        print("--- %s seconds ---" % (time.time() - start))
         return self.puzzle
 
 
