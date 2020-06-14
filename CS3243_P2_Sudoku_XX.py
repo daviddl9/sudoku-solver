@@ -1,8 +1,5 @@
 import sys
 import copy
-import heapq
-from collections import defaultdict
-import time
 
 class Cell(object):
     def __init__(self, coords, board):
@@ -42,17 +39,6 @@ class Cell(object):
                 if not (x0+j == self.coords[1] and y0+i == self.coords[0]) and self.board[y0+i][x0+j] == 0:
                     neighbors.add((y0+i, x0+j))
         return neighbors
-
-    def __str__(self):
-        return str(self.board[self.coords[0]][self.coords[1]]) + ', ' + str(self.coords) + ', ' + str(self.domain) + ', ' + str(self.neighbors)
-
-    @property
-    def remainingValues(self):
-        return len(self.domain)
-
-    @property
-    def degree(self):
-        return len(self.neighbors)
 
 class Sudoku(object):
     def __init__(self, puzzle):
@@ -108,6 +94,7 @@ class Sudoku(object):
             self.grid[y][x].domain.add(val)
 
     def choose_cell_to_assign(self):
+        """Chooses the cell to assign, by using the minimum-remaining values (MRV) heuristic. It tie-breaks MRV values with the degree of each cell."""
         min_domain = 10
         max_degree = -1
         chosen_row = None
@@ -129,6 +116,7 @@ class Sudoku(object):
         return self.grid[chosen_row][chosen_col]
 
     def least_constraining_values(self, cell):
+        """Sorts domain values in the order of the least constraining values to most constraining values."""
         vals = {}
         for val in cell.domain:
             vals[val] = 0
@@ -161,9 +149,7 @@ class Sudoku(object):
         return False
 
     def solve(self):
-        start = time.time()
         self.backtrack()
-        print("--- %s seconds ---" % (time.time() - start))
         return self.puzzle
 
 
